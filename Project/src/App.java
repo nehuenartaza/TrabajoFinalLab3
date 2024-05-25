@@ -3,4 +3,7 @@ public class App {
         System.out.println("Hello, World!");
         System.out.println("otra prueba");
     }
+    public static void xdd(){
+        System.out.println("otra vez");
+    }
 }
