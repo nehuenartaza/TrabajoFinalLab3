@@ -1,12 +1,20 @@
-public class App {
-    public static void main(String[] args) throws Exception {
-        System.out.println("Hello, World!");
-        System.out.println("otra prueba");
+import java.util.Scanner;
 
-        System.out.println(Habitacion.HabitacionStatus.EN_DESINFECCION);
+public class App {
+    static Scanner scan = new Scanner(System.in);
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+
+    public static void menuPasajero() {
 
     }
-    public static void xdd(){
-        System.out.println("otra vez");
+
+    public static void menuRecepcionista() {
+
+    }
+
+    public static void menuAdministrador() {
+        
     }
 }

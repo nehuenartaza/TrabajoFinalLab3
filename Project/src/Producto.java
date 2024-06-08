@@ -1,5 +1,4 @@
 public class Producto {
-
     private String nombre;
     private double precio;
 
@@ -9,7 +8,7 @@ public class Producto {
     }
 
     public Producto() {
-        this.nombre = " ";
+        this.nombre = "";
         this.precio = 0 ;
     }
 
@@ -31,9 +30,7 @@ public class Producto {
 
     @Override
     public String toString() {
-        return "\nProducto:" +
-                "\nnombre: " + nombre +
-                "\nprecio=" + precio ;
+        return "Producto: " + nombre + " |Precio:" + precio;
     }
 
 }

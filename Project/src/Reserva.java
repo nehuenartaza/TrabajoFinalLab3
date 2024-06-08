@@ -1,16 +1,9 @@
 public class Reserva {
-
     private String ingreso;
     private String egreso;
     private int cantidad;
     private String dni;
     private ReservaStatus estado;
-
-    public enum ReservaStatus{
-        ACTIVA,
-        EN_PROCESO,
-        CANCELADA;
-    }
 
     public Reserva(String ingreso, String egreso, int cantidad, String dni, ReservaStatus estado) {
         this.ingreso = ingreso;
@@ -70,12 +63,7 @@ public class Reserva {
 
     @Override
     public String toString() {
-        return "\nReserva: " +
-                "\ningreso: " + ingreso +
-                "\negreso: " + egreso +
-                "\ncantidad: " + cantidad +
-                "\ndni: " + dni +
-                "\nestado: " + estado ;
+        return "Reserva: Ingreso: " + ingreso + " |Egreso: " + egreso + " |Cantidad: " + cantidad + " |Dni: " + dni + " |Estado: " + estado;
     }
     
 }

@@ -1,5 +1,4 @@
 public class Persona {
-
     private String nombre;
     private String apellido;
     private String dni;
@@ -42,9 +41,6 @@ public class Persona {
 
     @Override
     public String toString() {
-        return "\nPersona:" +
-                "\nnombre: " + nombre +
-                "\napellido: " + apellido +
-                 "\ndni: " + dni ;
+        return "Persona Nombre: " + nombre + " |Apellido: " + apellido + " |Dni: " + dni;
     }
 }
