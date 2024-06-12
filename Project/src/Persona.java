@@ -10,9 +10,9 @@ public class Persona {
     }
 
     public Persona() {
-        this.nombre = " ";
-        this.dni = " ";
-        this.apellido = " ";
+        this.nombre = "";
+        this.dni = "";
+        this.apellido = "";
     }
 
     public String getNombre() {

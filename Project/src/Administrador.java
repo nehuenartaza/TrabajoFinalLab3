@@ -11,22 +11,16 @@ public class Administrador extends Persona implements Administrable {
         return "Administrador: Nombre: " + getNombre() + " |Apellido: " + getApellido() + " |Dni: " + getDni();
     }
 
-
-
-
-
-
-    //TODO implementaciones 
     @Override
-    public void checkin() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'checkin'");
+    public void checkin(Habitacion habitacion, Reserva reserva) {
+    	habitacion.setEstado(HabitacionStatus.OCUPADO);
+    	reserva.setEstado(ReservaStatus.EN_PROCESO);
     }
 
     @Override
-    public void checkout() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'checkout'");
+    public void checkout(Habitacion habitacion, Reserva reserva) {
+    	habitacion.setEstado(HabitacionStatus.EN_LIMPIEZA);
+    	reserva.setEstado(ReservaStatus.FINALIZADA);
     }
 
     @Override
@@ -37,20 +31,14 @@ public class Administrador extends Persona implements Administrable {
 
     @Override
     public void cancelarReserva(Reserva reserva) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cancelarReserva'");
+        reserva.setEstado(ReservaStatus.CANCELADA);
     }
 
     @Override
-    public void estadoHabitacion(int numero) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'estadoHabitacion'");
-    }
-
-    @Override
-    public void cambiarEstadoHabitacion(int numero, HabitacionStatus nuevoEstado) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cambiarEstadoHabitacion'");
+    public void cambiarEstadoHabitacion(Habitacion habitacion, HabitacionStatus nuevoEstado) {
+    	if ( !(habitacion.getEstado() == HabitacionStatus.OCUPADO) ) {
+    		habitacion.setEstado(nuevoEstado);
+    	}
     }
 
     @Override

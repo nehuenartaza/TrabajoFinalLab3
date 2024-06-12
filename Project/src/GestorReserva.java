@@ -7,12 +7,25 @@ public class GestorReserva {
     public GestorReserva() {
 
     }
-
-    public boolean hacerReserva(Reserva reserva) {  //hacer validaciones de ingresos y egresos y que dicha reserva no sea de un Pasajero con otra reserva pendiente acá o en donde sea
-        reservas.add(reserva);
-        return true;
+    
+    public ArrayList<Reserva> getReservas() {
+    	return reservas;
     }
 
+    public void hacerReserva(Reserva reserva) {
+        reservas.add(reserva);
+    }
+    
+    public Reserva getReservaPorDni(String dni) {
+    	Reserva aux = new Reserva();
+    	for ( Reserva i : reservas ) {
+    		if ( i != null && i.getDni().equals(dni) ) {
+    			aux = i;
+    		}
+    	}
+    	return aux;
+    }
+    
     public void cancelarReserva(Reserva reserva) {
         for ( Reserva i : reservas ) {
             if ( i != null && i.getDni().equals(reserva.getDni()) ) {

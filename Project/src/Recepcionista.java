@@ -18,13 +18,13 @@ public class Recepcionista extends Persona implements Recepcionable {
 
     //TODO implementaciones
     @Override
-    public void checkin() {
+    public void checkin(Habitacion habitacion, Reserva reserva) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'checkin'");
     }
 
     @Override
-    public void checkout() {
+    public void checkout(Habitacion habitacion, Reserva reserva) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'checkout'");
     }
@@ -42,18 +42,6 @@ public class Recepcionista extends Persona implements Recepcionable {
     }
 
     @Override
-    public void estadoHabitacion(int numero) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'estadoHabitacion'");
-    }
-
-    @Override
-    public void cambiarEstadoHabitacion(int numero, HabitacionStatus nuevoEstado) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cambiarEstadoHabitacion'");
-    }
-
-    @Override
     public void agregarHistorial(Historial nuevo, Pasajero pasajero) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'agregarHistorial'");
@@ -64,5 +52,11 @@ public class Recepcionista extends Persona implements Recepcionable {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'registrarPasajero'");
     }
+
+	@Override
+	public void cambiarEstadoHabitacion(Habitacion habitacion, HabitacionStatus nuevoEstado) {
+		// TODO Auto-generated method stub
+		
+	}
     
 }

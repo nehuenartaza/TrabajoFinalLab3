@@ -3,13 +3,41 @@ import java.util.Scanner;
 public class App {
     static Scanner scan = new Scanner(System.in);
     public static void main(String[] args) {
-        System.out.println("Hello, World!");
+    	//ME FALTA HACER
+    	/* algoritmo que al iniciar el programa cargue todos los datos
+    	 * algoritmo de inicio de sesion para cada usuario
+    	 * algoritmo que ocupe/desocupe habitaciones, agregue historial de reservas a cada pasajero 
+		 * por habitacion ocupada, borre reservas de GestionReserva. todo esto segun la fecha actual
+    	 * algoritmo que si no existe un archivo con staff, forzar a registrar un staff
+    	 */
+        Administrador a = new Administrador("a", "b", "123");
+        Hotel h = new Hotel();
+        h.registrarHabitacion(new Habitacion(1, 4, 0.0, HabitacionStatus.DISPONIBLE));
+        h.registrarPasajero(new Pasajero("nehuen", "artaza", "250394", "mdp", "calle 3"));
+        h.hacerReserva(new Reserva("1", "2", 2, "250394", ReservaStatus.ACTIVA , 1));
+        h.mostrarReservas();
+        h.mostrarHabitaciones();
+        //Modelo para hacer un buen checkin
+        a.checkin(h.getHabitacionPorNumero(1), h.getReservaPorDni("250394"));
+        h.mostrarReservas();
+        h.mostrarHabitaciones();
 
-        menuPasajero();
-        menuRecepcionista();
-        menuAdministrador();
+        //menuPasajero();
+        //menuRecepcionista();
+        //menuAdministrador();
 
     }
+    /* PASAJERO: reservas remotas, pedir consumos
+	 */
+    
+    /* RECEPCIONISTA: checkin y checkout, hacer y cancelar reservas, listar habitaciones y ver estados, listar reservas, 
+     * carga de datos de pasajeros y ver sus datos
+    */
+    
+    /* ADMINISTRADOR: puede agregar y cancelar reservas, agregar, modificar y borrar productos, hacer copias de datos de archivos
+     * checkin y checkout, ver habitaciones, creacion de staff y pasajeros, cambiar estado de habitaciones, listar habitaciones, listar reservas
+     * ver estado de habitaciones, ver datos de pasajeros registrados, ver, modificar y borrar staff
+    */
 
     public static void menuPasajero() {
         int opcion;

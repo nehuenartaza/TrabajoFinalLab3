@@ -4,21 +4,24 @@ public class Reserva {
     private int cantidad;
     private String dni;
     private ReservaStatus estado;
+    private int numeroHabitacion;
 
-    public Reserva(String ingreso, String egreso, int cantidad, String dni, ReservaStatus estado) {
+    public Reserva(String ingreso, String egreso, int cantidad, String dni, ReservaStatus estado, int numeroHabitacion) {
         this.ingreso = ingreso;
         this.egreso = egreso;
         this.cantidad = cantidad;
         this.dni = dni;
         this.estado = estado;
+        this.numeroHabitacion = numeroHabitacion;
     }
 
     public Reserva() {
         this.ingreso = "";
         this.egreso = "";
         this.cantidad = 0;
-        this.dni = " ";
+        this.dni = "";
         this.estado = ReservaStatus.ACTIVA;
+        this.numeroHabitacion = 0;
     }
 
     public String getIngreso() {
@@ -61,7 +64,15 @@ public class Reserva {
         this.estado = estado;
     }
 
-    @Override
+    public int getNumeroHabitacion() {
+		return numeroHabitacion;
+	}
+
+	public void setNumeroHabitacion(int numeroHabitacion) {
+		this.numeroHabitacion = numeroHabitacion;
+	}
+
+	@Override
     public String toString() {
         return "Reserva: Ingreso: " + ingreso + " |Egreso: " + egreso + " |Cantidad: " + cantidad + " |Dni: " + dni + " |Estado: " + estado;
     }

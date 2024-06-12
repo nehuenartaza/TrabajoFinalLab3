@@ -11,8 +11,10 @@ public class GestorHabitacion {
 
     }
 
-    public void registrarHabitacion(Habitacion nueva) { //validar que no se agregue una habitacion con mismo numero, se podría hacer un LinkedHashMap de habitaciones para que no hayan repetidos, clave: num habitacion
-        habitaciones.add(nueva);
+    public void registrarHabitacion(Habitacion nueva) {
+        if ( !habitacionExiste(nueva.getNumero()) ) {
+        	habitaciones.add(nueva);
+        }
     }
     
     public void eliminarHabitacion(int numero) {
@@ -43,6 +45,33 @@ public class GestorHabitacion {
         for ( Habitacion i : habitaciones ) {
             if ( i != null && i.getNumero() == numero ) {
                 i.setCuenta(i.getCuenta() + precio);
+            }
+        }
+    }
+    
+    public boolean habitacionExiste(int numero) {
+    	for ( Habitacion i : habitaciones ) {
+    		if ( i != null && i.getNumero() == numero ) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    public Habitacion getHabitacionPorNumero(int numero) {
+    	Habitacion aux = new Habitacion();
+    	for ( Habitacion i : habitaciones ) {
+    		if ( i != null && i.getNumero() == numero )
+    			aux = i;
+    		break;
+    	}
+    	return aux;
+    }
+    
+    public void printHabitaciones() {
+        for ( Habitacion i : habitaciones ) {
+            if ( i != null ) {
+                System.out.println(i);
             }
         }
     }

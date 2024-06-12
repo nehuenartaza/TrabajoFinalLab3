@@ -29,6 +29,10 @@ public class Pasajero extends Persona {
     public ArrayList<Historial> getHistorial() {
         return historial;
     }
+    
+    public void agregarHistorial(Historial nuevo) {
+    	historial.add(nuevo);
+    }
 
     @Override
     public String toString() {
