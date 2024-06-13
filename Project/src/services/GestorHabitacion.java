@@ -1,6 +1,9 @@
+package services;
+import java.io.Serializable;
 import java.util.ArrayList;
+import utilities.HabitacionStatus;
 
-public class GestorHabitacion {
+public class GestorHabitacion implements Serializable {
     private ArrayList<Habitacion> habitaciones = new ArrayList<Habitacion>();
 
     public GestorHabitacion(ArrayList<Habitacion> habitaciones) {
@@ -19,7 +22,7 @@ public class GestorHabitacion {
     
     public void eliminarHabitacion(int numero) {
         for ( Habitacion i : habitaciones ) {
-            if ( i != null && i.getNumero() == numero ) {
+            if ( i != null && i.getNumero() == numero && i.getEstado() != HabitacionStatus.OCUPADO ) {
                 habitaciones.remove(habitaciones.indexOf(i));
             }
         }

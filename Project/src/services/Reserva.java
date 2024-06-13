@@ -1,4 +1,8 @@
-public class Reserva {
+package services;
+import java.io.Serializable;
+import utilities.ReservaStatus;
+
+public class Reserva implements Serializable {
     private String ingreso;
     private String egreso;
     private int cantidad;

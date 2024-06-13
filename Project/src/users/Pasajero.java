@@ -1,6 +1,8 @@
+package users;
+import java.io.Serializable;
 import java.util.ArrayList;
-
-public class Pasajero extends Persona {
+import services.Historial;
+public class Pasajero extends Persona implements Serializable {
     private String localidad;
     private String domicilio;
     ArrayList<Historial> historial = new ArrayList<Historial>();
@@ -17,7 +19,11 @@ public class Pasajero extends Persona {
         this.localidad = localidad;
         this.domicilio = domicilio;
     }
-
+    
+    public Pasajero() {
+    	
+    }
+    
     public String getLocalidad() {
         return localidad;
     }

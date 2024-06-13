@@ -1,4 +1,7 @@
-public class Producto {
+package services;
+import java.io.Serializable;
+
+public class Producto implements Serializable {
     private String nombre;
     private double precio;
 

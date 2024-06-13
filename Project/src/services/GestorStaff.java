@@ -1,10 +1,18 @@
-public class GestorStaff {
+package services;
+import java.io.Serializable;
+import users.Persona;
+
+public class GestorStaff implements Serializable {
     private String rol;
     private Persona datos;
 
     public GestorStaff(Persona datos, String rol) {
         this.datos = datos;
         this.rol = rol;
+    }
+    
+    public GestorStaff() {
+    	
     }
 
     public String getRol() {
@@ -13,6 +21,10 @@ public class GestorStaff {
 
     public Persona getDatos() {
         return datos;
+    }
+    
+    public void setDatos(Persona datos) {
+    	this.datos = datos;
     }
 
     @Override

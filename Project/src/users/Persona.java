@@ -1,4 +1,7 @@
-public class Persona {
+package users;
+import java.io.Serializable;
+
+public class Persona implements Serializable {
     private String nombre;
     private String apellido;
     private String dni;

@@ -1,4 +1,7 @@
-public class Historial {
+package services;
+import java.io.Serializable;
+
+public class Historial implements Serializable {
     private String ingreso;
     private String egreso;
     private Habitacion habitacion;

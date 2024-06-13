@@ -1,4 +1,7 @@
-public class Habitacion {
+package services;
+import java.io.Serializable;
+import utilities.HabitacionStatus;
+public class Habitacion implements Serializable {
     private int numero;
     private HabitacionStatus estado;
     private int capacidad;
