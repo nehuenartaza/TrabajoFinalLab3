@@ -92,11 +92,20 @@ public class Hotel {
     public boolean cambiarStaff(GestorStaff staffModificado) {
     	for ( GestorStaff i : staff ) {
     		if ( i != null && i.getDatos().getDni().equals(staffModificado.getDatos().getDni()) ) {
-    			i = staffModificado;
+    			i.setDatos(staffModificado.getDatos());
     			return true;
     		}
     	}
         return false;
+    }
+    
+    public boolean esAdministrador(String dni) {
+    	for ( GestorStaff i : staff ) {
+    		if ( i != null && i.getDatos() instanceof Administrador ) {
+    			return true;
+    		}
+    	}
+    	return false;
     }
     
     public boolean aumentarRangoARecepcionista(String dniRecepcionista) {
@@ -163,11 +172,13 @@ public class Hotel {
     		return fueReservado;
     	}
     	if ( habitacionDeseada.getEstado() != HabitacionStatus.DISPONIBLE ) {
+    		System.out.println("Habitacion no disponible");
     		return fueReservado;
     	}
     	boolean conflictoFechas = false;
     	Reserva temp = gestorReserva.getReservaPorDni(reserva.getDni());	//si retorna una reserva vacía entonces el pasajero no tiene una reserva pendiente
     	if ( !temp.getDni().isBlank() ) {
+    		System.out.println("Pasajero con dni: " + reserva.getDni() + " no tiene reserva pendiente");
     		return fueReservado;
     	} else {
     		/* EN ESTE PUNTO SOLO SE VALIDAN LAS RESERVAS DE LA HABITACIÓN CORRESPONDIENTE */
@@ -178,6 +189,7 @@ public class Hotel {
     			}//si ambas fechas son anteriores o posteriores a alguna reserva, se seguirá evaluando, sino termina bucle
     			if ( !( reserva.getIngreso().compareTo(i.getIngreso()) < 0 && reserva.getEgreso().compareTo(i.getEgreso()) < 0 ) ||
     				!( reserva.getIngreso().compareTo(i.getIngreso()) > 0 && reserva.getEgreso().compareTo(i.getEgreso()) > 0 ) ) {
+    				System.out.println("Conflicto de reservas, alguien reservó la habitación durante el período deseado");
     				conflictoFechas = true;
     				break;
     			}
@@ -294,6 +306,7 @@ public class Hotel {
     	for ( Producto i : productos ) {
     		if ( i != null && i.getNombre().equalsIgnoreCase(nombre) ) {
     			productos.remove(i);
+    			break;
     		}
     	}
     }
@@ -301,7 +314,8 @@ public class Hotel {
     public void cambiarProducto(Producto p) {
     	for ( Producto i : productos ) {
     		if ( i != null && i.getNombre().equalsIgnoreCase(p.getNombre()) ) {
-    			i = p;
+    			i.setNombre(p.getNombre());
+    			i.setPrecio(p.getPrecio());
     			break;
     		}
     	}
@@ -367,12 +381,32 @@ public class Hotel {
     }
     
     public void guardarStaff() {
-    	File file = new File("staff.json");
+    	File file = new File("administradores.json");
     	ObjectMapper map = new ObjectMapper();
+    	ArrayList<Administrador> admins = new ArrayList<Administrador>();
+    	for ( GestorStaff i : staff ) {
+    		if ( i != null && i.getDatos() instanceof Administrador ) {
+    			admins.add((Administrador)i.getDatos());
+    		}
+    	}
     	try {
-    		map.writeValue(file, staff);	//ArrayList
+    		map.writeValue(file, admins);	//ArrayList
     	} catch ( IOException e ) {
-    		System.out.println("Hubo un error en el guardado de staff");
+    		System.out.println("Hubo un error en el guardado de admins");
+    	}
+    	
+    	File file2 = new File("recepcionistas.json");
+    	ObjectMapper map2 = new ObjectMapper();
+    	ArrayList<Recepcionista> recepcionistas = new ArrayList<Recepcionista>();
+    	for ( GestorStaff i : staff ) {
+    		if ( i != null && i.getDatos() instanceof Recepcionista ) {
+    			recepcionistas.add((Recepcionista)i.getDatos());
+    		}
+    	}
+    	try {
+    		map2.writeValue(file2, recepcionistas);	//ArrayList
+    	} catch ( IOException e ) {
+    		System.out.println("Hubo un error en el guardado de recepcionistas");
     	}
     }
     
@@ -390,7 +424,7 @@ public class Hotel {
     	File file = new File("habitaciones.json");
     	ObjectMapper map = new ObjectMapper();
     	try {
-    		map.writeValue(file, gestorHabitacion);	
+    		map.writeValue(file, gestorHabitacion.getHabitaciones());	
     	} catch ( IOException e ) {
     		System.out.println("Hubo un error en el guardado de habitaciones");
     	}
@@ -422,20 +456,42 @@ public class Hotel {
     	} catch ( FileNotFoundException e ) {
     		System.out.println("El archivo de pasajeros no existe");
     	} catch (IOException e) {
-    		System.out.println("Hubo un error en la lectura");
+    		System.out.println("Hubo un error en la lectura de pasajeros");
 		}
     }
     
     public void cargarStaff() {
-    	File file = new File("staff.json");
+    	File file = new File("administradores.json");
     	ObjectMapper map = new ObjectMapper();
+    	ArrayList<Administrador> admins = new ArrayList<Administrador>();
     	try {
-    		staff = map.readValue(file, new TypeReference<ArrayList<GestorStaff>>() {});
+    		admins = map.readValue(file, new TypeReference<ArrayList<Administrador>>() {});
     	} catch ( FileNotFoundException e ) {
-    		System.out.println("El archivo de staff no existe");
+    		System.out.println("El archivo de administradores no existe");
     	} catch (IOException e) {
-    		System.out.println("Hubo un error en la lectura");
+    		System.out.println("Hubo un error en la lectura de administradores");
 		}
+    	for ( Administrador i : admins ) {
+    		if ( i != null ) {
+    			staff.add(new GestorStaff(i, "Administrador"));
+    		}
+    	}
+    	
+    	File file2 = new File("recepcionistas.json");
+    	ObjectMapper map2 = new ObjectMapper();
+    	ArrayList<Recepcionista> recepcionistas = new ArrayList<Recepcionista>();
+    	try {
+    		recepcionistas = map.readValue(file2, new TypeReference<ArrayList<Recepcionista>>() {});
+    	} catch ( FileNotFoundException e ) {
+    		System.out.println("El archivo de recepcionistas no existe");
+    	} catch (IOException e) {
+    		System.out.println("Hubo un error en la lectura de recepcionistas");
+		}
+    	for ( Recepcionista i : recepcionistas ) {
+    		if ( i != null ) {
+    			staff.add(new GestorStaff(i, "Recepcionista"));
+    		}
+    	}
     }
     
     public void cargarProductos() {
@@ -446,7 +502,7 @@ public class Hotel {
     	} catch ( FileNotFoundException e ) {
     		System.out.println("El archivo de productos no existe");
     	} catch (IOException e) {
-    		System.out.println("Hubo un error en la lectura");
+    		System.out.println("Hubo un error en la lectura de productos");
 		}
     }
     
@@ -454,11 +510,11 @@ public class Hotel {
     	File file = new File("habitaciones.json");
     	ObjectMapper map = new ObjectMapper();
     	try {
-    		gestorHabitacion = map.readValue(file, new TypeReference<GestorHabitacion>() {});
+    		gestorHabitacion.setHabitaciones(map.readValue(file, new TypeReference<ArrayList<Habitacion>>() {}));
     	} catch ( FileNotFoundException e ) {
     		System.out.println("El archivo de habitaciones no existe");
     	} catch (IOException e) {
-    		System.out.println("Hubo un error en la lectura");
+    		System.out.println("Hubo un error en la lectura de habitaciones");
 		}
     }
     
@@ -470,7 +526,7 @@ public class Hotel {
     	} catch ( FileNotFoundException e ) {
     		System.out.println("El archivo de reservas no existe");
     	} catch (IOException e) {
-    		System.out.println("Hubo un error en la lectura");
+    		System.out.println("Hubo un error en la lectura de reservas");
 		}
     }
 }

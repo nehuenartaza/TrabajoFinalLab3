@@ -13,7 +13,15 @@ public class GestorHabitacion implements Serializable {
     public GestorHabitacion() {
 
     }
-
+    
+    public ArrayList<Habitacion> getHabitaciones() {
+    	return habitaciones;
+    }
+    
+    public void setHabitaciones(ArrayList<Habitacion> habitaciones) {
+    	this.habitaciones = habitaciones;
+    }
+    
     public void registrarHabitacion(Habitacion nueva) {
         if ( !habitacionExiste(nueva.getNumero()) ) {
         	habitaciones.add(nueva);

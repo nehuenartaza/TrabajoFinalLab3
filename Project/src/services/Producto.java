@@ -33,7 +33,7 @@ public class Producto implements Serializable {
 
     @Override
     public String toString() {
-        return "Producto: " + nombre + " |Precio:" + precio;
+        return "Producto: " + nombre + " |Precio: " + precio;
     }
 
 }

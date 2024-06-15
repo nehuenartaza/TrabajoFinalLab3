@@ -9,6 +9,9 @@ public class App {
     static Scanner scan = new Scanner(System.in);
     public static void main(String[] args) {
     	Persona usuario = new Persona();
+    	Recepcionista recepcionista = new Recepcionista();
+    	Pasajero pasajero = new Pasajero();
+    	Administrador administrador = new Administrador();
     	Hotel hotel = new Hotel();
     	hotel.cargar();
     	String nombre = null, apellido = null, dni = null, localidad = null, domicilio = null, fechaIngreso = null, fechaEgreso = null, nombreProducto = null;
@@ -52,7 +55,7 @@ public class App {
     	}
     	if ( seleccionUsuario == 1 ) {
     		do {
-        		System.out.println("Ingrese el dni del pasajero a registrar");
+        		System.out.println("Por favor pasajero, ingrese su dni");
         		dni = scan.nextLine();
         		if ( !hotel.staffExiste(dni) && !hotel.pasajeroExiste(dni) ) {
         			datosValidos = true;
@@ -70,9 +73,9 @@ public class App {
         	if ( datosValidos ) {
         		datosValidos = false;
         		do {
-        			System.out.println("Ingrese nombre del pasajero");
+        			System.out.println("Ingrese su nombre");
         			nombre = scan.nextLine();
-        			System.out.println("Ingrese apellido del pasajero");
+        			System.out.println("Ingrese su apellido");
         			apellido = scan.nextLine();
         			if ( !contieneNumero(nombre) || !contieneNumero(apellido) ) {
         				System.out.println("Parámetros incorrectos");
@@ -80,13 +83,13 @@ public class App {
         				datosValidos = true;
         			}
             	} while ( !datosValidos );
-        		System.out.println("Ingrese domicilio del pasajero");
+        		System.out.println("Ingrese su domicilio");
         		domicilio = scan.nextLine();
-        		System.out.println("Ingrese localidad del pasajero");
+        		System.out.println("Ingrese su localidad");
         		localidad = scan.nextLine();
         		hotel.registrarPasajero(new Pasajero(nombre, apellido, dni, localidad, domicilio));
         	}
-        	seleccionUsuario = 1;
+        	
         	dni = null;
         	datosValidos = false;
         	nombre = null;
@@ -94,17 +97,21 @@ public class App {
         	domicilio = null;
         	localidad = null;
     	}
-    	
+    	seleccionUsuario = 1;
     	/* SE PEDIRÁ EL DNI PARA BUSCARLO ENTRE STAFF Y PASAJEROS Y SEGÚN DÓNDE SE ENCUENTRE SERÁ LOS PERMISOS QUE TENDRÁ EL USUARIO */
     	do {
-    		System.out.println("Para iniciar sesión, ingrese su dni. Si quiere registrarse como pasajero para hacer una reserva remota ingrese -1");
+    		System.out.println("Para iniciar sesión, ingrese su dni");
     		dni = scan.nextLine();
     		if ( hotel.staffExiste(dni) ) {
-    			usuario = hotel.obtenerStaff(dni).getDatos();
+    			if ( hotel.esAdministrador(dni) ) {
+    				administrador = (Administrador) hotel.obtenerStaff(dni).getDatos();
+    			} else {
+    				recepcionista = (Recepcionista) hotel.obtenerStaff(dni).getDatos();
+    			}
     			break;
     		}
     		if ( hotel.pasajeroExiste(dni) ) {
-    			usuario = hotel.obtenerPasajero(dni);
+    			pasajero = hotel.obtenerPasajero(dni);
     			break;
     		}
     		System.out.println("No se encontró ningún usuario registrado con ese dni");
@@ -119,9 +126,8 @@ public class App {
     	} while ( seleccionUsuario != 0 );
     	
     	if ( seleccionUsuario != 0 ) { //si no es 0 es porque el usuario pudo iniciar sesión
-    		if ( usuario instanceof Administrador ) {
-    			Administrador admin = (Administrador) usuario;
-    			bienvenida(usuario);
+    		if ( !administrador.getDni().isBlank() ) {
+    			bienvenida(administrador.getNombre());
     			do {
     				menuAdministrador();
     				try {
@@ -132,7 +138,7 @@ public class App {
     					scan.nextLine();
     				}
     				switch ( opcion ) {
-    				case 1:						/* CheckIn */
+    				case 1:						/* CheckIn */				//funciona
     					hotel.mostrarReservas(ReservaStatus.ACTIVA);
     					System.out.println("Ingrese dni de la reserva a hacer checkin");
     					dni = scan.nextLine();
@@ -142,7 +148,7 @@ public class App {
     						//el pasajero no puede entrar a la habitacion hasta que no esté disponible por mantenimiento
     						if ( r1.getEstado() == ReservaStatus.ACTIVA && 
     						h1.getEstado() == HabitacionStatus.DISPONIBLE ) {
-    						admin.checkin(h1, r1);
+    							administrador.checkin(h1, r1);
     						}
     					}
     					
@@ -156,12 +162,12 @@ public class App {
                     	Habitacion h2 = hotel.getHabitacionPorNumero(r2.getNumeroHabitacion());
                     	if ( r2.getEstado() == ReservaStatus.EN_PROCESO && 
                     		h2.getEstado() == HabitacionStatus.OCUPADO ) {
-                    		admin.checkout(h2, r2);
+                    		administrador.checkout(h2, r2);
                     		hotel.agregarHistorial(new Historial(r2.getIngreso(), r2.getEgreso(), h2), dni);
                     	}
                     	dni = null;
                         break;
-                    case 3:						/* HACER RESERVA */
+                    case 3:						/* HACER RESERVA */			//funciona, testear que funcione el algoritmo de conflicto
                     	/* ALGORITMO DE INGRESO DE DNI */
                     	do {
                     		System.out.println("Ingrese dni del pasajero");
@@ -177,7 +183,7 @@ public class App {
                     				scan.nextLine();
                     			}
                     		}
-                    	} while ( !usuarioEncontrado || seleccionUsuario != 0 );
+                    	} while ( !usuarioEncontrado && seleccionUsuario != 0 );
                     	/* SE VALIDA QUE NO HAYA CANCELADO LA RESERVA, LUEGO ALGORITMO PARA NUMERO DE HABITACION Y CANTIDAD DE PERSONAS */
                     	if ( seleccionUsuario != 0 ) {
                     		do {
@@ -213,7 +219,7 @@ public class App {
                         				scan.nextLine();
                         			}
                     			}
-                    		} while ( !habitacionEncontrada || !cantidadValida || seleccionUsuario != 0 );
+                    		} while ( !habitacionEncontrada || !cantidadValida && seleccionUsuario != 0 );
                     	}
                     	/* ALGORITMO FECHA INGRESO-EGRESO */
                     	/* Validacion de conflictos entre fechas de ingreso y egreso en Hotel.hacerReserva() */
@@ -222,7 +228,7 @@ public class App {
                     		fechaIngreso = seleccionarFecha("Ingreso");
                     		System.out.println("Ingrese fecha de egreso (si la fecha de egreso es anterior a la de ingreso, se invertirán los valores)");
                     		fechaEgreso = seleccionarFecha("Egreso");
-                    		if ( fechaIngreso.compareTo(fechaEgreso) >= 0 ) {
+                    		if ( fechaIngreso.compareTo(fechaEgreso) <= 0 ) {
                     			System.out.println("Se pudo hacer la reserva? " + hotel.hacerReserva(new Reserva(fechaIngreso, fechaEgreso, cantidadPersonas, dni, ReservaStatus.ACTIVA, numHabitacion)));
                     		} else {
                     			System.out.println("Se pudo hacer la reserva? " + hotel.hacerReserva(new Reserva(fechaEgreso, fechaIngreso , cantidadPersonas, dni, ReservaStatus.ACTIVA, numHabitacion)));
@@ -237,21 +243,27 @@ public class App {
                         numHabitacion = 0;
                         dni = null;
                         break;
-                    case 4:
-                    	/* ALGORITMO DE CANCELACION DE RESERVA */
+                    case 4:				/* ALGORITMO DE CANCELACION DE RESERVA */	//funciona, volver a probar que la habitacion cambie de estado si está ocupada por un pasajero y este cancela la reserva
                     	System.out.println("Ingrese dni de la reserva a cancelar");
                     	dni = scan.nextLine();
                     	reservaEncontrada = hotel.reservaExiste(dni);
                     	if ( reservaEncontrada ) {
                     		Reserva aBorrar = hotel.extraerReserva(dni);
-                    		admin.cancelarReserva(aBorrar);													/* LE MANDA LA HABITACION */
+                    		Habitacion h4 = hotel.getHabitacionPorNumero(aBorrar.getNumeroHabitacion());
+                    		//ver algoritmo para que si el pasajero cancela la reserva mientras ocupa la habitacion, esta cambie de estado, pero que verifique que ese pasajero era el que ocupaba la habitacion y no otro
+                    		/*
+                    		if ( h4.getEstado() == HabitacionStatus.OCUPADO ) {		//si se cancela la reserva
+                    			administrador.cambiarEstadoHabitacion(h4, HabitacionStatus.EN_LIMPIEZA);
+                    		}*/
+                    		
+                    		administrador.cancelarReserva(aBorrar);													/* LE MANDA LA HABITACION */
                     		Historial paraAgregar = new Historial(aBorrar.getIngreso(), aBorrar.getEgreso(), hotel.getHabitacionPorNumero(aBorrar.getNumeroHabitacion()));
                     		hotel.agregarHistorial(paraAgregar, dni);
                     	}
                     	dni = null;
                     	reservaEncontrada = false;
                         break;
-                    case 5:		/* VER ESTADO HABITACION */
+                    case 5:		/* VER ESTADO HABITACION */							//funciona
                     	System.out.println("Ingrese numero de habitacion para ver su estado");
                     	try {
                     		numHabitacion = scan.nextInt();
@@ -263,8 +275,8 @@ public class App {
                     	}
                     	numHabitacion = 0;
                     	break;
-                    case 6:			/* REGISTRAR NUEVO PRODUCTO */
-                    	System.out.println("Ingrese en nombre del nuevo producto");
+                    case 6:			/* REGISTRAR NUEVO PRODUCTO */					//funciona
+                    	System.out.println("Ingrese el nombre del nuevo producto");
                     	nombreProducto = scan.nextLine();
                     	try {
                     		System.out.println("Ingrese el precio");
@@ -281,9 +293,9 @@ public class App {
                     	nombreProducto = null;
                     	precio = 0.0;
                     	break;
-                    case 7:			/* CAMBIAR PRODUCTO */
+                    case 7:			/* CAMBIAR PRODUCTO */							//funciona
                     	hotel.mostrarProductos();
-                    	System.out.println("Ingrese en nombre del producto a cambiar");
+                    	System.out.println("Ingrese el nombre del producto a cambiar");
                     	nombreProducto = scan.nextLine();
                     	try {
                     		System.out.println("Ingrese el nuevo precio");
@@ -299,10 +311,12 @@ public class App {
                     	nombreProducto = null;
                     	precio = 0.0;
                     	break;
-                    case 8:			/* BORRAR PRODUCTO */
+                    case 8:			/* BORRAR PRODUCTO */							//funciona
                     	hotel.mostrarProductos();
-                    	System.out.println("Ingrese en nombre del producto a borrar");
-                    	hotel.eliminarProducto(scan.nextLine());
+                    	System.out.println("Ingrese el nombre del producto a borrar");
+                    	nombre = scan.nextLine();
+                    	hotel.eliminarProducto(nombre);
+                    	nombre = null;
                     	break;
                     case 9:			/* CREAR STAFF */
                     	do {
@@ -336,7 +350,7 @@ public class App {
                     	datosValidos = false;
                     	seleccionUsuario = 1;
                     	break;
-                    case 10:		/* REGISTRAR PASAJERO */
+                    case 10:		/* REGISTRAR PASAJERO */						//funciona, falta probar a fondo los bucles
                     	do {
                     		System.out.println("Ingrese el dni del pasajero a registrar");
                     		dni = scan.nextLine();
@@ -352,7 +366,7 @@ public class App {
                     				scan.nextLine();
                     			}
                     		}
-                    	} while ( !datosValidos || seleccionUsuario != 0 );
+                    	} while ( !datosValidos && seleccionUsuario != 0 );
                     	if ( datosValidos ) {
                     		datosValidos = false;
                     		do {
@@ -360,7 +374,7 @@ public class App {
 	                			nombre = scan.nextLine();
 	                			System.out.println("Ingrese apellido del pasajero");
 	                			apellido = scan.nextLine();
-	                			if ( !contieneNumero(nombre) || !contieneNumero(apellido) ) {
+	                			if ( contieneNumero(nombre) || contieneNumero(apellido) ) {
 	                				System.out.println("Parámetros incorrectos");
 	                			} else {
 	                				datosValidos = true;
@@ -380,7 +394,7 @@ public class App {
                     	domicilio = null;
                     	localidad = null;
                     	break;
-                    case 11:			/* CAMBIAR ESTADO HABITACION */
+                    case 11:			/* CAMBIAR ESTADO HABITACION */				//funciona
                     	System.out.println("Ingrese numero de habitacion a cambiar de estado (no se podrá cambiar de estado si la habitacion está ocupada)");
                     	try {
                     		numHabitacion = scan.nextInt();
@@ -391,7 +405,7 @@ public class App {
                     	}
                     	habitacionEncontrada = hotel.habitacionExiste(numHabitacion);
                     	if ( habitacionEncontrada ) {
-                    		Habitacion h11 = hotel.getHabitacionPorNumero(cantidadPersonas);
+                    		Habitacion h11 = hotel.getHabitacionPorNumero(numHabitacion);
                     		if ( h11.getEstado() != HabitacionStatus.OCUPADO ) {
                     			System.out.println("1- poner habitacion en limpieza");
                     			System.out.println("2- poner habitacion en reparacion");
@@ -406,16 +420,16 @@ public class App {
                     			}
                     			switch ( seleccionUsuario ) {
                     			case 1:
-                    				admin.cambiarEstadoHabitacion(h11, HabitacionStatus.EN_LIMPIEZA);
+                    				administrador.cambiarEstadoHabitacion(h11, HabitacionStatus.EN_LIMPIEZA);
                     				break;
                     			case 2:
-                    				admin.cambiarEstadoHabitacion(h11, HabitacionStatus.EN_REPARACION);
+                    				administrador.cambiarEstadoHabitacion(h11, HabitacionStatus.EN_REPARACION);
                     				break;
                     			case 3:
-                    				admin.cambiarEstadoHabitacion(h11, HabitacionStatus.EN_DESINFECCION);
+                    				administrador.cambiarEstadoHabitacion(h11, HabitacionStatus.EN_DESINFECCION);
                     				break;
                     			case 4:
-                    				admin.cambiarEstadoHabitacion(h11, HabitacionStatus.DISPONIBLE);
+                    				administrador.cambiarEstadoHabitacion(h11, HabitacionStatus.DISPONIBLE);
                     				break;
                     			}
                     		} else {
@@ -428,7 +442,7 @@ public class App {
                     	habitacionEncontrada = false;
                     	seleccionUsuario = 1;
                     	break;
-                    case 12:						/* REGISTRAR HABITACION */
+                    case 12:						/* REGISTRAR HABITACION */		//falta probar meter habitacion repetida
                     	System.out.println("Ingrese numero para la nueva habitacion (numero no puede ser 0 o menor)");
                     	try {
                     		numHabitacion = scan.nextInt();
@@ -458,26 +472,26 @@ public class App {
                     	numHabitacion = 0;
                     	capacidad = 0;
                     	break;
-                    case 13:					/* MOSTRAR HABITACIONES */
+                    case 13:					/* MOSTRAR HABITACIONES */			//funciona
                     	hotel.mostrarHabitaciones();
                     	break;
-                    case 14:					/* MOSTRAR RESERVAS */
+                    case 14:					/* MOSTRAR RESERVAS */				//funciona
                     	hotel.mostrarReservas();
                     	break;
-                    case 15:					/* MOSTRAR PASAJEROS */
+                    case 15:					/* MOSTRAR PASAJEROS */				//funciona
                     	hotel.mostrarPasajeros();
                     	break;
-                    case 16:					/* MOSTRAR PRODUCTOS */
+                    case 16:					/* MOSTRAR PRODUCTOS */				//funciona
                     	hotel.mostrarProductos();
                     	break;
-                    case 17:					/* VER HISTORIAL DE UN PASAJERO */
+                    case 17:					/* VER HISTORIAL DE UN PASAJERO */	//funciona
                     	System.out.println("Ingrese dni del pasajero a ver su historial");
                     	dni = scan.nextLine();
                     	hotel.verHistorial(dni);
                     	dni = null;
                     	break;
-                    case 18:					/* MOSTRAR STAFF */
-                    	admin.mostrarStaff(hotel.getStaff());
+                    case 18:					/* MOSTRAR STAFF */					//funciona
+                    	administrador.mostrarStaff(hotel.getStaff());
                     	break;
                     case 19:					/* MODIFICAR STAFF */
                     	System.out.println("Ingrese dni del staff a modificar");
@@ -505,13 +519,13 @@ public class App {
                     	nombre = null;
                     	apellido = null;
                     	break;
-                    case 20:					/* BORRAR STAFF */
+                    case 20:					/* BORRAR STAFF */				//falta probar borrar otro que no sea si mismo
                     	System.out.println("Ingrese dni del staff a borrar");
                     	dni = scan.nextLine();
-                    	if ( !dni.equals(admin.getDni()) ) {	//valida que no se borre a si mismo
+                    	if ( !dni.equals(administrador.getDni()) ) {	//valida que no se borre a si mismo
                     		usuarioEncontrado = hotel.staffExiste(dni);
 	                    	if ( usuarioEncontrado ) {
-	                    		admin.borrarStaff(dni, hotel.getStaff());
+	                    		administrador.borrarStaff(dni, hotel.getStaff());
 	                    	} else {
 	                    		System.out.println("No se encontró el staff buscado");
 	                    	}
@@ -547,7 +561,7 @@ public class App {
                     case 22:					/* SUBIR RANGO A STAFF */
                     	System.out.println("Ingrese dni del staff a subir de rango (recepcionista a administrador)");
                     	dni = scan.nextLine();
-                    	if ( !dni.equals(admin.getDni()) ) {
+                    	if ( !dni.equals(administrador.getDni()) ) {
                     		if ( hotel.aumentarRangoARecepcionista(dni) ) {
                     			System.out.println("El staff ahora es administrador");
                     		} else {
@@ -561,7 +575,7 @@ public class App {
                     case 23:					/* BAjAR RANGO A STAFF */
                     	System.out.println("Ingrese dni del staff a bajar de rango (administrador a recepcionista)");
                     	dni = scan.nextLine();
-                    	if ( !dni.equals(admin.getDni()) ) {
+                    	if ( !dni.equals(administrador.getDni()) ) {
                     		if ( hotel.bajarRangoAAdministrador(dni) ) {
                     			System.out.println("El staff ahora es recepcionista");
                     		} else {
@@ -575,9 +589,8 @@ public class App {
     				}
     				
     			} while ( opcion != 0 );
-    		} else if ( usuario instanceof Recepcionista ) {
-    			Recepcionista recep = (Recepcionista) usuario;
-    			bienvenida(usuario);
+    		} else if ( !recepcionista.getDni().isBlank() ) {
+    			bienvenida(recepcionista.getNombre());
     			do {
     				menuRecepcionista();
     				try {
@@ -597,7 +610,7 @@ public class App {
     						Habitacion hab1 = hotel.getHabitacionPorNumero(res1.getNumeroHabitacion());
     						if ( res1.getEstado() == ReservaStatus.ACTIVA && 
 	    						hab1.getEstado() == HabitacionStatus.DISPONIBLE ) {
-	    						recep.checkin(hab1, res1);
+    							recepcionista.checkin(hab1, res1);
     						}
     					}
     					dni = null;
@@ -610,7 +623,7 @@ public class App {
                     	Habitacion h2 = hotel.getHabitacionPorNumero(r2.getNumeroHabitacion());
                     	if ( r2.getEstado() == ReservaStatus.EN_PROCESO && 
                     		h2.getEstado() == HabitacionStatus.OCUPADO ) {
-                    		recep.checkout(h2, r2);
+                    		recepcionista.checkout(h2, r2);
                     		hotel.agregarHistorial(new Historial(r2.getIngreso(), r2.getEgreso(), h2), dni);
                     	}
                     	dni = null;
@@ -696,7 +709,7 @@ public class App {
                     	reservaEncontrada = hotel.reservaExiste(dni);
                     	if ( reservaEncontrada ) {
                     		Reserva aBorrar = hotel.extraerReserva(dni);
-                    		recep.cancelarReserva(aBorrar);
+                    		recepcionista.cancelarReserva(aBorrar);
                     		Historial paraAgregar = new Historial(aBorrar.getIngreso(), aBorrar.getEgreso(), hotel.getHabitacionPorNumero(aBorrar.getNumeroHabitacion()));
                     		hotel.agregarHistorial(paraAgregar, dni);
                     	}
@@ -771,8 +784,7 @@ public class App {
     				}
     			} while ( opcion != 0 );
     		} else if ( usuario instanceof Pasajero ) {
-    			Pasajero pasajero = (Pasajero) usuario;
-    			bienvenida(usuario);
+    			bienvenida(pasajero.getNombre());
     			do {
     				menuPasajero();
     				try {
@@ -887,8 +899,8 @@ public class App {
     	hotel.guardado();	//backup completo
     }
     
-    public static void bienvenida(Persona usuario) {
-    	System.out.println("Bienvenido: " + usuario.getNombre() + " " + usuario.getApellido());
+    public static void bienvenida(String nombre) {
+    	System.out.println("Bienvenido: " + nombre);
     }
     
     public static boolean contieneNumero(String str) {
@@ -953,18 +965,20 @@ public class App {
     			scan.nextLine();
     		}
     		if ( dia > 0 && dia <= Mes.getDiasDeMes(mes) ) {
-    			if ( mes == mesLocal ) {	//si el mes que eligió es igual al actual, se valida que el dia selecconado aun no haya pasado
+    			if ( mes == mesLocal ) {	//si el mes que eligió es igual al actual, se valida que el dia seleccionado aun no haya pasado
     				if ( dia >= diaLocal ) {
     					opcionValida = true;
     				} else {
     					System.out.println("Dia no puede ser menor al actual");
     				}
+    			} else {
+    				opcionValida = true;
     			}
     		} else {
     			System.out.println("Dato fuera de rango");
     		}
     	} while ( !opcionValida );
-    	return Integer.toString(diaLocal) + "-" + Integer.toString(mesLocal) + "-" + Integer.toString(añoLocal);
+    	return Integer.toString(dia) + "-" + Integer.toString(mes) + "-" + Integer.toString(año);
     }
 
     public static void menuPasajero() {
