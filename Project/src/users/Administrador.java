@@ -70,6 +70,7 @@ public class Administrador extends Persona implements Administrable, Serializabl
         for ( GestorStaff i : staff ) {
         	if ( i != null && i.getDatos().getDni().equals(dni) ) {
         		staff.remove(i);
+        		break;
         	}
         }
     }

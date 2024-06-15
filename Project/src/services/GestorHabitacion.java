@@ -18,6 +18,16 @@ public class GestorHabitacion implements Serializable {
     	return habitaciones;
     }
     
+    public HabitacionStatus getEstadoHabitacion(int numero) {
+    	HabitacionStatus status = HabitacionStatus.DISPONIBLE;
+    	for ( Habitacion i : habitaciones ) {
+    		if ( i != null && i.getNumero() == numero ) {
+    			status = i.getEstado();
+    		}
+    	}
+    	return status;
+    }
+    
     public void setHabitaciones(ArrayList<Habitacion> habitaciones) {
     	this.habitaciones = habitaciones;
     }

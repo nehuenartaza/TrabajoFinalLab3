@@ -23,9 +23,19 @@ public class GestorReserva implements Serializable {
     	for ( Reserva i : reservas ) {
     		if ( i != null && i.getDni().equals(dni) ) {
     			aux = i;
+    			break;
     		}
     	}
     	return aux;
+    }
+    
+    public void eliminarReservaPorDni(String dni) {
+    	for ( Reserva i : reservas ) {
+    		if ( i != null && i.getDni().equals(dni) ) {
+    			reservas.remove(i);
+    			break;
+    		}
+    	}
     }
     
     public Reserva extraerPorDni(String dni) {
@@ -53,6 +63,7 @@ public class GestorReserva implements Serializable {
         for ( Reserva i : reservas ) {
             if ( i != null && i.getDni().equals(reserva.getDni()) ) {
                 reservas.remove(reserva);
+                break;
             }
         }
     }

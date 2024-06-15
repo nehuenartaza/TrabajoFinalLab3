@@ -5,7 +5,7 @@ import services.Historial;
 public class Pasajero extends Persona implements Serializable {
     private String localidad;
     private String domicilio;
-    ArrayList<Historial> historial = new ArrayList<Historial>();
+    private ArrayList<Historial> historial = new ArrayList<Historial>();
 
     public Pasajero(String nombre, String apellido, String dni, String localidad, String domicilio, ArrayList<Historial> historial)  {
         super(nombre, apellido, dni);
@@ -38,6 +38,10 @@ public class Pasajero extends Persona implements Serializable {
     
     public void agregarHistorial(Historial nuevo) {
     	historial.add(nuevo);
+    }
+    
+    public void setHistorial(ArrayList<Historial> historial) {
+    	this.historial = historial;
     }
 
     @Override

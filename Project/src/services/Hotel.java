@@ -57,6 +57,10 @@ public class Hotel {
         gestorHabitacion.verEstadoHabitacion(numero);
     }
     
+    public HabitacionStatus getEstadoHabitacion(int numero) {
+    	return gestorHabitacion.getEstadoHabitacion(numero);
+    }
+    
     public void mostrarHabitaciones() {
     	gestorHabitacion.printHabitaciones();
     }
@@ -101,8 +105,12 @@ public class Hotel {
     
     public boolean esAdministrador(String dni) {
     	for ( GestorStaff i : staff ) {
-    		if ( i != null && i.getDatos() instanceof Administrador ) {
-    			return true;
+    		if ( i != null && i.getDatos().getDni().equals(dni) ) {
+    			if ( i.getDatos() instanceof Administrador ) {
+    				return true;
+    			} else {
+    				return false;	//es recepcionista
+    			}
     		}
     	}
     	return false;
@@ -142,6 +150,7 @@ public class Hotel {
     	for ( GestorStaff i : this.staff ) {
     		if ( i != null && i.getDatos().getDni().equals(dni) ) {
     			staff.remove(i);
+    			System.out.println("Se borró el staff con dni: " + dni);
     			break;
     		}
     	}
@@ -178,7 +187,7 @@ public class Hotel {
     	boolean conflictoFechas = false;
     	Reserva temp = gestorReserva.getReservaPorDni(reserva.getDni());	//si retorna una reserva vacía entonces el pasajero no tiene una reserva pendiente
     	if ( !temp.getDni().isBlank() ) {
-    		System.out.println("Pasajero con dni: " + reserva.getDni() + " no tiene reserva pendiente");
+    		System.out.println("Pasajero con dni: " + reserva.getDni() + " tiene reserva pendiente");
     		return fueReservado;
     	} else {
     		/* EN ESTE PUNTO SOLO SE VALIDAN LAS RESERVAS DE LA HABITACIÓN CORRESPONDIENTE */
@@ -220,6 +229,10 @@ public class Hotel {
     		r = gestorReserva.extraerPorDni(dni);
     	}
     	return r;
+    }
+    
+    public void eliminarReservaPorDni(String dni) {
+    	gestorReserva.eliminarReservaPorDni(dni);
     }
     
     public boolean reservaExiste(String dni) {
@@ -378,6 +391,22 @@ public class Hotel {
     	} catch ( IOException e ) {
     		System.out.println("Hubo un error en el guardado de pasajeros");
     	}
+    	/*
+    	File file2 = new File("historial.json");
+    	ObjectMapper map2 = new ObjectMapper();
+    	ArrayList<Historial> historiales = new ArrayList<Historial>();
+    	try {
+    		for ( Pasajero i : pasajeros ) {	//guardamos los historiales aparte porque hace conflicto al intentar leer todo junto en pasajeros.json
+    			if ( i != null ) {
+    				historiales.addAll(i.getHistorial());	//juntamos todos los historiales en una coleccion
+    			}
+    		}
+    		map2.writeValue(file2, historiales);
+    	} catch ( IOException e ) {
+    		System.out.println("Hubo un error en el guardado de historiales de pasajeros");
+    	}*/
+    	
+    	
     }
     
     public void guardarStaff() {
@@ -458,6 +487,34 @@ public class Hotel {
     	} catch (IOException e) {
     		System.out.println("Hubo un error en la lectura de pasajeros");
 		}
+    	/* hay un error que no permite leer el archivo de pasajeros
+    	 * se intentó solucionar guardando pasajeros e historiales de forma aparte
+    	 * pero no resultó ser la solución
+    	 * 
+    	 */
+    	
+    	
+    	/*
+    	ArrayList<Historial> historiales = new ArrayList<Historial>();
+    	File file2 = new File("historial.json");
+    	ObjectMapper map2 = new ObjectMapper();
+    	try {
+    		historiales = map2.readValue(file2, new TypeReference<ArrayList<Historial>>(){});
+    	} catch ( IOException e ) {
+    		System.out.println("Hubo un error en la lectura de historiales de pasajeros");
+    	}
+    	
+    	for ( Pasajero i : pasajeros ) {	//por cada pasajero se recorre los historiales buscando por dni
+    		if ( i != null ) {
+    			for ( Historial j : historiales ) {
+    				if ( j != null && i.getDni().equals(j.getDniPasajero()) ) {
+    					i.agregarHistorial(j);
+    				}
+    			}
+    		}
+    	}*/
+    	
+    	
     }
     
     public void cargarStaff() {
@@ -481,7 +538,7 @@ public class Hotel {
     	ObjectMapper map2 = new ObjectMapper();
     	ArrayList<Recepcionista> recepcionistas = new ArrayList<Recepcionista>();
     	try {
-    		recepcionistas = map.readValue(file2, new TypeReference<ArrayList<Recepcionista>>() {});
+    		recepcionistas = map2.readValue(file2, new TypeReference<ArrayList<Recepcionista>>() {});
     	} catch ( FileNotFoundException e ) {
     		System.out.println("El archivo de recepcionistas no existe");
     	} catch (IOException e) {
