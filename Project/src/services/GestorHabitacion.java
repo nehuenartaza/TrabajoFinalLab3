@@ -41,7 +41,8 @@ public class GestorHabitacion implements Serializable {
     public void eliminarHabitacion(int numero) {
         for ( Habitacion i : habitaciones ) {
             if ( i != null && i.getNumero() == numero && i.getEstado() != HabitacionStatus.OCUPADO ) {
-                habitaciones.remove(habitaciones.indexOf(i));
+                habitaciones.remove(i);
+                break;
             }
         }
     }

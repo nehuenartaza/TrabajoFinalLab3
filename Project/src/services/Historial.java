@@ -5,7 +5,6 @@ public class Historial implements Serializable {
     private String ingreso;
     private String egreso;
     private Habitacion habitacion;
-    private String dniPasajero;
 
     public Historial(String ingreso, String egreso, Habitacion habitacion) {
         this.ingreso = ingreso;
@@ -25,10 +24,6 @@ public class Historial implements Serializable {
         return habitacion;
     }
     
-    public String getDniPasajero() {
-		return dniPasajero;
-	}
-
 
 	@Override
     public String toString() {

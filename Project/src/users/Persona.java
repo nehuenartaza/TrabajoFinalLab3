@@ -1,7 +1,7 @@
 package users;
 import java.io.Serializable;
 
-public class Persona implements Serializable {
+public abstract class Persona implements Serializable {
     private String nombre;
     private String apellido;
     private String dni;
@@ -43,7 +43,5 @@ public class Persona implements Serializable {
     }
 
     @Override
-    public String toString() {
-        return "Persona Nombre: " + nombre + " |Apellido: " + apellido + " |Dni: " + dni;
-    }
+    public abstract String toString();
 }

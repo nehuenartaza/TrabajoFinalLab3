@@ -8,7 +8,6 @@ import services.*;
 public class App {
     static Scanner scan = new Scanner(System.in);
     public static void main(String[] args) {
-    	Persona usuario = new Persona();
     	Recepcionista recepcionista = new Recepcionista();
     	Pasajero pasajero = new Pasajero();
     	Administrador administrador = new Administrador();
@@ -174,7 +173,7 @@ public class App {
                     		dni = scan.nextLine();
                     		usuarioEncontrado = hotel.pasajeroExiste(dni);
                     		if ( !usuarioEncontrado ) {
-                    			System.out.println("Para volver a intentar ingrese un numero, de lo contrario ingrese 0");
+                    			System.out.println("No se encontró un pasajero con ese dni. Para volver a intentar ingrese un numero, de lo contrario ingrese 0");
                     			try {
                     				seleccionUsuario = scan.nextInt();
                     			} catch ( InputMismatchException e ) {
@@ -200,7 +199,7 @@ public class App {
                     			}
                     			habitacionEncontrada = hotel.habitacionExiste(numHabitacion);
                     			if ( habitacionEncontrada ) {
-                    				if ( hotel.getHabitacionPorNumero(numHabitacion).getCapacidad() >= cantidadPersonas ) {
+                    				if ( hotel.getHabitacionPorNumero(numHabitacion).getCapacidad() >= cantidadPersonas && cantidadPersonas > 0 ) {
                     					cantidadValida = true;
                     				} else {
                     					System.out.println("La habitacion no tiene capacidad suficiente para " + cantidadPersonas + " personas");
@@ -590,6 +589,29 @@ public class App {
                     	}
                     	dni = null;
                     	break;
+                    case 24:			/* BORRAR HABITACION */
+                    	hotel.mostrarHabitaciones();
+                    	System.out.println("Ingrese numero de habitacion a borrar");
+                    	try {
+                    		numHabitacion = scan.nextInt();
+                    	} catch ( InputMismatchException e ) {
+                    		System.out.println("No se permiten letras, solo numeros");
+                    	} finally {
+                    		scan.nextLine();
+                    	}
+                    	habitacionEncontrada = hotel.habitacionExiste(numHabitacion);
+                    	if ( habitacionEncontrada ) {
+                    		if ( hotel.getEstadoHabitacion(numHabitacion) != HabitacionStatus.OCUPADO ) {
+                    			hotel.eliminarHabitacion(numHabitacion);
+                    			hotel.eliminarReservasPorNumeroHabitacion(numHabitacion);
+                    		} else {
+                    			System.out.println("No se puede borrar la habitacion porque está ocupada");
+                    		}
+                    	} else {
+                    		System.out.println("La habitacion no se encontró");
+                    	}
+                    	
+                    	break;
     				}
     				
     			} while ( opcion != 0 );
@@ -665,7 +687,7 @@ public class App {
                     			}
                     			habitacionEncontrada = hotel.habitacionExiste(numHabitacion);
                     			if ( habitacionEncontrada ) {
-                    				if ( hotel.getHabitacionPorNumero(numHabitacion).getCapacidad() >= cantidadPersonas ) {
+                    				if ( hotel.getHabitacionPorNumero(numHabitacion).getCapacidad() >= cantidadPersonas && cantidadPersonas > 0 ) {
                     					cantidadValida = true;
                     				} else {
                     					System.out.println("La habitacion no tiene capacidad suficiente para " + cantidadPersonas + " personas");
@@ -811,6 +833,7 @@ public class App {
     						break;
     					}
     					do {
+    						hotel.mostrarHabitaciones();
                 			System.out.println("Ingrese numero de habitacion a reservar");
                 			try {
                 				numHabitacion = scan.nextInt();
@@ -824,7 +847,7 @@ public class App {
                 			}
                 			habitacionEncontrada = hotel.habitacionExiste(numHabitacion);
                 			if ( habitacionEncontrada ) {
-                				if ( hotel.getHabitacionPorNumero(numHabitacion).getCapacidad() >= cantidadPersonas ) {
+                				if ( hotel.getHabitacionPorNumero(numHabitacion).getCapacidad() >= cantidadPersonas && cantidadPersonas > 0 ) {
                 					cantidadValida = true;
                 				} else {
                 					System.out.println("La habitacion no tiene capacidad suficiente para " + cantidadPersonas + " personas");
@@ -843,7 +866,7 @@ public class App {
                     				scan.nextLine();
                     			}
                 			}
-                		} while ( !habitacionEncontrada || !cantidadValida && seleccionUsuario != 0 );
+                		} while ( ( !habitacionEncontrada || !cantidadValida ) && seleccionUsuario != 0 );
 	                	
 	                	/* ALGORITMO FECHA INGRESO-EGRESO */
 	                	if ( seleccionUsuario != 0 ) {
@@ -1055,6 +1078,7 @@ public class App {
         System.out.println("║ 21. Pedir consumo para pasajero ║");
         System.out.println("║ 22. Subir rango a staff         ║");
         System.out.println("║ 23. Bajar rango a staff         ║");
+        System.out.println("║ 24. Borrar habitacion           ║");
         System.out.println("║ 0. Salir                        ║");
         System.out.println("╚═════════════════════════════════╝");
         System.out.println("Seleccione una opción: ");

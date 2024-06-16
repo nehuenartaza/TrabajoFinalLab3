@@ -38,6 +38,17 @@ public class GestorReserva implements Serializable {
     	}
     }
     
+    public boolean eliminarReservaPorNumeroHabitacion(int numHabitacion) {
+    	for ( Reserva i : reservas ) {
+    		if ( i != null && i.getNumeroHabitacion() == numHabitacion ) {
+    			System.out.println("Se eliminó: " + i.toString());
+    			reservas.remove(i);
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
     public Reserva extraerPorDni(String dni) {
     	Reserva r = new Reserva();
     	for ( Reserva i : reservas ) {

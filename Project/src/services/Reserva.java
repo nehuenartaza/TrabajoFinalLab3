@@ -78,7 +78,7 @@ public class Reserva implements Serializable {
 
 	@Override
     public String toString() {
-        return "Reserva: Ingreso: " + ingreso + " |Egreso: " + egreso + " |Cantidad: " + cantidad + " |Dni: " + dni + " |Estado: " + estado;
+        return "Reserva: Ingreso: " + ingreso + " |Egreso: " + egreso + " |Cantidad: " + cantidad + " |Dni: " + dni + " |Estado: " + estado + " |Habitacion: " + numeroHabitacion;
     }
     
 }

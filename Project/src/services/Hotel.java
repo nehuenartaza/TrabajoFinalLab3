@@ -196,8 +196,9 @@ public class Hotel {
     			if ( i.getNumeroHabitacion() != numHabitacion ) {	//si no es la misma, vuelve a iterar sin terminar el ciclo
     				continue;
     			}//si ambas fechas son anteriores o posteriores a alguna reserva, se seguirá evaluando, sino termina bucle
-    			if ( !( reserva.getIngreso().compareTo(i.getIngreso()) < 0 && reserva.getEgreso().compareTo(i.getEgreso()) < 0 ) ||
-    				!( reserva.getIngreso().compareTo(i.getIngreso()) > 0 && reserva.getEgreso().compareTo(i.getEgreso()) > 0 ) ) {
+    			
+    			if ( !(reserva.getIngreso().compareTo(i.getIngreso()) < 0 && reserva.getEgreso().compareTo(i.getIngreso()) < 0) &&
+    				 !(reserva.getIngreso().compareTo(i.getEgreso()) > 0 && reserva.getEgreso().compareTo(i.getEgreso()) > 0) ) {
     				System.out.println("Conflicto de reservas, alguien reservó la habitación durante el período deseado");
     				conflictoFechas = true;
     				break;
@@ -233,6 +234,10 @@ public class Hotel {
     
     public void eliminarReservaPorDni(String dni) {
     	gestorReserva.eliminarReservaPorDni(dni);
+    }
+    
+    public void eliminarReservasPorNumeroHabitacion(int numero) {
+    	while ( gestorReserva.eliminarReservaPorNumeroHabitacion(numero) );
     }
     
     public boolean reservaExiste(String dni) {
@@ -406,6 +411,12 @@ public class Hotel {
     		System.out.println("Hubo un error en el guardado de historiales de pasajeros");
     	}*/
     	
+    	/* Guarda todo correctamente pero hay conflicto a la hora
+    	 * de leer el archivo cuando hay al menos 1 pasajero guardado
+    	 * con al menos 1 historial registrado
+    	 * 
+    	 */
+    	
     	
     }
     
@@ -490,6 +501,8 @@ public class Hotel {
     	/* hay un error que no permite leer el archivo de pasajeros
     	 * se intentó solucionar guardando pasajeros e historiales de forma aparte
     	 * pero no resultó ser la solución
+    	 * 
+    	 * Solo no lee el archivo cuando al menos 1 pasajero tiene al menos un historial cargado en su arrayList
     	 * 
     	 */
     	
