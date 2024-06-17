@@ -50,10 +50,14 @@ public class Pasajero extends Persona implements Serializable {
     }
     
     public void printHistorial() {
-        for ( Historial i : historial ) {
-            if ( i != null ) {
-                System.out.println(i);
+        if ( !historial.isEmpty() ) {
+            for ( Historial i : historial ) {
+                if ( i != null ) {
+                    System.out.println(i);
+                }
             }
+        } else {
+            System.out.println("No hay historial");
         }
     }
 }

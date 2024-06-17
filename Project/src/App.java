@@ -225,14 +225,14 @@ public class App {
                     	if ( seleccionUsuario != 0 ) {
                     		System.out.println("Ingrese fecha de ingreso");
                     		fechaIngreso = seleccionarFecha("Ingreso");
-                    		System.out.println("Ingrese fecha de egreso (si la fecha de egreso es anterior a la de ingreso, se invertirán los valores)");
+                    		System.out.println("Ingrese fecha de egreso");
                     		fechaEgreso = seleccionarFecha("Egreso");
-                    		if ( fechaIngreso.compareTo(fechaEgreso) <= 0 ) {
-                    			System.out.println("Se pudo hacer la reserva? " + hotel.hacerReserva(new Reserva(fechaIngreso, fechaEgreso, cantidadPersonas, dni, ReservaStatus.ACTIVA, numHabitacion)));
-                    		} else {
-                    			System.out.println("Se pudo hacer la reserva? " + hotel.hacerReserva(new Reserva(fechaEgreso, fechaIngreso , cantidadPersonas, dni, ReservaStatus.ACTIVA, numHabitacion)));
-                    		}
-                    	}
+							if ( fechaIngreso.compareTo(fechaEgreso) < 0 ) {
+								System.out.println("Se pudo hacer la reserva? " + hotel.hacerReserva(new Reserva(fechaIngreso, fechaEgreso, cantidadPersonas, dni, ReservaStatus.ACTIVA, numHabitacion)));
+							} else {
+								System.out.println("El ingreso no puede ser posterior al egreso");
+							}
+						}
                         seleccionUsuario = 1;
                         fechaIngreso = null;
                         fechaEgreso = null;
@@ -656,24 +656,24 @@ public class App {
                     	dni = null;
 					    break;
 					case 3:				/* HACER RESERVA */
-                    	do {/* ALGORITMO DE INGRESO DE DNI */
+                    	do {			/* ALGORITMO DE INGRESO DE DNI */
                     		System.out.println("Ingrese dni del pasajero");
                     		dni = scan.nextLine();
                     		usuarioEncontrado = hotel.pasajeroExiste(dni);
                     		if ( !usuarioEncontrado ) {
-                    			System.out.println("Para volver a intentar ingrese un numero, de lo contrario ingrese 0");
+                    			System.out.println("No se encontró un pasajero con ese dni. Para volver a intentar ingrese un numero, de lo contrario ingrese 0");
                     			try {
                     				seleccionUsuario = scan.nextInt();
                     			} catch ( InputMismatchException e ) {
-                    				System.out.println("Valor incorrecto, solo se admiten numeros");
+                    				System.out.println("Valor incorrecto");
                     			} finally {
                     				scan.nextLine();
                     			}
                     		}
                     	} while ( !usuarioEncontrado && seleccionUsuario != 0 );
-                    	
-                    	if ( seleccionUsuario != 0 ) {	//validacion de cancelacion de reserva
-                    		do {					/* ALGORITMO PARA NUMERO DE HABITACION Y CANTIDAD DE PERSONAS */
+                    	/* SE VALIDA QUE NO HAYA CANCELADO LA RESERVA, LUEGO ALGORITMO PARA NUMERO DE HABITACION Y CANTIDAD DE PERSONAS */
+                    	if ( seleccionUsuario != 0 ) {
+                    		do {
                     			System.out.println("Ingrese numero de habitacion a reservar");
                     			try {
                     				numHabitacion = scan.nextInt();
@@ -709,17 +709,18 @@ public class App {
                     		} while ( !habitacionEncontrada || !cantidadValida && seleccionUsuario != 0 );
                     	}
                     	/* ALGORITMO FECHA INGRESO-EGRESO */
+                    	/* Validacion de conflictos entre fechas de ingreso y egreso en Hotel.hacerReserva() */
                     	if ( seleccionUsuario != 0 ) {
                     		System.out.println("Ingrese fecha de ingreso");
                     		fechaIngreso = seleccionarFecha("Ingreso");
-                    		System.out.println("Ingrese fecha de egreso (si la fecha de egreso es anterior a la de ingreso, se invertirán los valores)");
+                    		System.out.println("Ingrese fecha de egreso");
                     		fechaEgreso = seleccionarFecha("Egreso");
-                    		if ( fechaIngreso.compareTo(fechaEgreso) <= 0 ) {	/* Validacion de conflictos entre fechas de ingreso y egreso en Hotel.hacerReserva() */
-                    			System.out.println("Se pudo hacer la reserva? " + hotel.hacerReserva(new Reserva(fechaIngreso, fechaEgreso, cantidadPersonas, dni, ReservaStatus.ACTIVA, numHabitacion)));
-                    		} else {
-                    			System.out.println("Se pudo hacer la reserva? " + hotel.hacerReserva(new Reserva(fechaEgreso, fechaIngreso , cantidadPersonas, dni, ReservaStatus.ACTIVA, numHabitacion)));
-                    		}
-                    	}
+							if ( fechaIngreso.compareTo(fechaEgreso) < 0 ) {
+								System.out.println("Se pudo hacer la reserva? " + hotel.hacerReserva(new Reserva(fechaIngreso, fechaEgreso, cantidadPersonas, dni, ReservaStatus.ACTIVA, numHabitacion)));
+							} else {
+								System.out.println("El ingreso no puede ser posterior al egreso");
+							}
+						}
                         seleccionUsuario = 1;
                         fechaIngreso = null;
                         fechaEgreso = null;
@@ -1014,7 +1015,19 @@ public class App {
     			System.out.println("Dato fuera de rango");
     		}
     	} while ( !opcionValida );
-    	return Integer.toString(dia) + "-" + Integer.toString(mes) + "-" + Integer.toString(año);
+		String fecha;
+		if ( dia <= 9 ) {
+			fecha = "0" + Integer.toString(dia);
+		} else {
+			fecha = Integer.toString(dia);
+		}
+		if ( mes <= 9) {
+			fecha = fecha + "-0" + Integer.toString(mes);
+		} else {
+			fecha = fecha + "-" + Integer.toString(mes);
+		}
+		fecha = fecha + "-" + Integer.toString(año);
+    	return fecha;
     }
 
     public static void menuPasajero() {

@@ -83,9 +83,10 @@ public class GestorHabitacion implements Serializable {
     public Habitacion getHabitacionPorNumero(int numero) {
     	Habitacion aux = new Habitacion();
     	for ( Habitacion i : habitaciones ) {
-    		if ( i != null && i.getNumero() == numero )
-    			aux = i;
-    		break;
+    		if ( i != null && i.getNumero() == numero ) {
+                aux = i;
+                break;
+            }
     	}
     	return aux;
     }

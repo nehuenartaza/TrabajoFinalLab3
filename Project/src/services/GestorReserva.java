@@ -80,21 +80,27 @@ public class GestorReserva implements Serializable {
     }
 
     public void printReservas() {
-        for ( Reserva i : reservas ) {
-            if ( i != null ) {
-                System.out.println(i);
-            }else{
-				System.out.println("\nNo han encontrado reservas...");
+		if ( !reservas.isEmpty() ) {
+			for ( Reserva i : reservas ) {
+				if ( i != null ) {
+					System.out.println(i.toString());
+				}
 			}
-        }
+		} else {
+			System.out.println("No hay reservas");
+		}
     }
     
     public void printReservas(ReservaStatus estado) {
-    	for ( Reserva i : reservas ) {
-    		if ( i != null & i.getEstado() == estado ) {
-    			System.out.println(i);
+		if ( !reservas.isEmpty() ) {
+			for ( Reserva i : reservas ) {
+    			if ( i != null & i.getEstado() == estado ) {
+    				System.out.println(i);
+    			}
     		}
-    	}
+		} else {
+			System.out.println("No hay reservas");
+		}
     }
 
     

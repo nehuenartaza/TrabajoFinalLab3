@@ -257,9 +257,7 @@ public class Hotel {
     		if ( i != null && i.getDni().equals(dni) ) {
     			System.out.println(i);
     			i.printHistorial();
-    		}else {
-				System.out.println("\nHistorial vacio...");
-			}
+    		}
     	}
     }
 
