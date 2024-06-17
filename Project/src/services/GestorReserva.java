@@ -83,7 +83,9 @@ public class GestorReserva implements Serializable {
         for ( Reserva i : reservas ) {
             if ( i != null ) {
                 System.out.println(i);
-            }
+            }else{
+				System.out.println("\nNo han encontrado reservas...");
+			}
         }
     }
     
