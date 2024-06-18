@@ -76,7 +76,7 @@ public class Hotel {
         gestorHabitacion.agregarConsumo(numero, precio);
     }
 
-    public void registrarStaff(GestorStaff staff) { //el nuevo staff viene del método crearStaff de Administrador
+    public void registrarStaff(GestorStaff staff) {
         if ( !staffExiste(staff.getDatos().getDni()) ) {
         	this.staff.add(staff);
         }
@@ -316,6 +316,7 @@ public class Hotel {
     	for ( Producto i : productos ) {
     		if ( i != null && i.getNombre().equalsIgnoreCase(p.getNombre()) ) {
     			productos.remove(i);
+				break;
     		}
     	}
     }
@@ -415,6 +416,9 @@ public class Hotel {
     	 * de leer el archivo cuando hay al menos 1 pasajero guardado
     	 * con al menos 1 historial registrado
     	 * 
+		 * se intentó ignorar el arrayList de historiales con transient para guardar todos los historiales
+		 * en un archivo aparte (en ese caso a Historial se le debía agregar un atributo dniPasajero para reconocer a quién le pertenecía cada historial)
+		 * pero aún así el ArrayList seguía siendo serializado y seguía sin leerlo correctamente
     	 */
     	
     	
