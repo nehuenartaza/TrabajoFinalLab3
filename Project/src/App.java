@@ -871,16 +871,16 @@ public class App {
 	                	
 	                	/* ALGORITMO FECHA INGRESO-EGRESO */
 	                	if ( seleccionUsuario != 0 ) {
-	                		System.out.println("Ingrese fecha de ingreso");
-	                		fechaIngreso = seleccionarFecha("Ingreso");
-	                		System.out.println("Ingrese fecha de egreso (si la fecha de egreso es anterior a la de ingreso, se invertirán los valores)");
-	                		fechaEgreso = seleccionarFecha("Egreso");
-	                		if ( fechaIngreso.compareTo(fechaEgreso) >= 0 ) {		/* Validacion de conflictos entre fechas de ingreso y egreso en Hotel.hacerReserva() */
-	                			System.out.println("Se pudo hacer la reserva? " + hotel.hacerReserva(new Reserva(fechaIngreso, fechaEgreso, cantidadPersonas, pasajero.getDni(), ReservaStatus.ACTIVA, numHabitacion)));
-	                		} else {
-	                			System.out.println("Se pudo hacer la reserva? " + hotel.hacerReserva(new Reserva(fechaEgreso, fechaIngreso , cantidadPersonas, pasajero.getDni(), ReservaStatus.ACTIVA, numHabitacion)));
-	                		}
-	                	}
+                    		System.out.println("Ingrese fecha de ingreso");
+                    		fechaIngreso = seleccionarFecha("Ingreso");
+                    		System.out.println("Ingrese fecha de egreso");
+                    		fechaEgreso = seleccionarFecha("Egreso");
+							if ( fechaIngreso.compareTo(fechaEgreso) < 0 ) {
+								System.out.println("Se pudo hacer la reserva? " + hotel.hacerReserva(new Reserva(fechaIngreso, fechaEgreso, cantidadPersonas, dni, ReservaStatus.ACTIVA, numHabitacion)));
+							} else {
+								System.out.println("El ingreso no puede ser posterior al egreso");
+							}
+						}
 	                    seleccionUsuario = 1;
 	                    fechaIngreso = null;
 	                    fechaEgreso = null;
